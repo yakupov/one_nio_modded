@@ -1,40 +1,38 @@
-"2,007334","1,403607","0,000000","0,000000",oknio.test.MethodTrashBin.oneSecondWorker,Sun Mar 24 20:23:22 GST 2013,10,3,3
-"1,017498","1,007998","0,000000","0,000000",oknio.test.MethodTrashBin.oneSecondWorker,Sun Mar 24 20:27:52 GST 2013,10,3,3
-"2,004485","1,204020","0,000000","0,000000",oknio.test.MethodTrashBin.oneSecondWorker,Sun Mar 24 20:28:06 GST 2013,10,3,3
-"2,002948","1,204865","0,000000","0,000000",oknio.test.MethodTrashBin.oneSecondWorker,Sun Mar 24 20:39:41 GST 2013,10,3,3
+"2,007334","1,403607",0,0,oknio.test.MethodTrashBin.oneSecondWorker,Sun Mar 24 20:23:22 GST 2013,10,3,3
+"1,017498","1,007998",0,0,oknio.test.MethodTrashBin.oneSecondWorker,Sun Mar 24 20:27:52 GST 2013,10,3,3
+"2,004485","1,20402",0,0,oknio.test.MethodTrashBin.oneSecondWorker,Sun Mar 24 20:28:06 GST 2013,10,3,3
+"2,002948","1,204865",0,0,oknio.test.MethodTrashBin.oneSecondWorker,Sun Mar 24 20:39:41 GST 2013,10,3,3
 "0,088999","0,079789","0,006275","0,050684",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:15:08 GST 2013,3,15,100,3,ByteBuffers
-"0,093128","0,088781","0,005582","0,045550",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:15:48 GST 2013,3,15,100,3,ByteBuffers
+"0,093128","0,088781","0,005582","0,04555",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:15:48 GST 2013,3,15,100,3,ByteBuffers
 "0,087048","0,083891","0,005906","0,048205",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:16:03 GST 2013,3,15,100,3,ByteBuffers
 "0,082064","0,079453","0,006234","0,050898",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:17:22 GST 2013,3,15,100,3,ByteArrays on client
 "0,081747","0,077589","0,006391","0,052121",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:17:43 GST 2013,3,15,100,3,ByteArrays on client
-"0,087838","0,082532","0,006010","0,048999",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:21:12 GST 2013,3,15,100,3,ByteArrays
+"0,087838","0,082532","0,00601","0,048999",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:21:12 GST 2013,3,15,100,3,ByteArrays
 "0,096422","0,090913","0,005451","0,044482",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:21:27 GST 2013,3,15,100,3,ByteArrays
-"0,092963","0,084630","0,005881","0,047784",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:22:34 GST 2013,3,15,100,3,ByteArrays only on Serv
+"0,092963","0,08463","0,005881","0,047784",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:22:34 GST 2013,3,15,100,3,ByteArrays only on Serv
 "0,084951","0,081977","0,006045","0,049331",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:22:46 GST 2013,3,15,100,3,ByteArrays only on Serv
-"0,073378","0,070672","0,007010","0,057222",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:25:52 GST 2013,3,15,1000,3,ByteArrays
-"0,072540","0,068531","0,007241","0,059009",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:27:17 GST 2013,3,15,1000,3,ByteArrays
+"0,073378","0,070672","0,00701","0,057222",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:25:52 GST 2013,3,15,1000,3,ByteArrays
+"0,07254","0,068531","0,007241","0,059009",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:27:17 GST 2013,3,15,1000,3,ByteArrays
 "0,072826","0,070366","0,007046","0,057471",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:28:39 GST 2013,3,15,1000,3,ByteArrays
-"0,074550","0,073346","0,006750","0,055136",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:31:00 GST 2013,3,15,1000,3,ByteBuffers
+"0,07455","0,073346","0,00675","0,055136",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:31:00 GST 2013,3,15,1000,3,ByteBuffers
 "0,075964","0,074332","0,006662","0,054404",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:32:29 GST 2013,3,15,1000,3,ByteBuffers
 "0,073131","0,069877","0,007107","0,057873",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:34:16 GST 2013,3,15,1000,3,ByteBuffers
 "0,071762","0,069605","0,007121","0,058099",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:37:06 GST 2013,3,15,1000,3,ByteBuffers
 "0,072332","0,067788","0,007332","0,059657",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:38:43 GST 2013,3,15,1000,3,ByteBuffers
-"0,074301","0,071009","0,006981","0,056950",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:44:07 GST 2013,3,15,1000,3,ByteBuffers
+"0,074301","0,071009","0,006981","0,05695",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:44:07 GST 2013,3,15,1000,3,ByteBuffers
 "0,074253","0,070912","0,006988","0,057028",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 21:45:36 GST 2013,3,15,1000,3,ByteBuffers
-"0,073894","0,068253","0,007329","0,059250",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:03:42 GST 2013,3,15,1000,3,"ByteBuffers, -server flag on server"
-"0,073020","0,068864","0,007230","0,058725",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:05:10 GST 2013,3,15,1000,3,"ByteBuffers, -server flag on server"
+"0,073894","0,068253","0,007329","0,05925",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:03:42 GST 2013,3,15,1000,3,"ByteBuffers, -server flag on server"
+"0,07302","0,068864","0,00723","0,058725",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:05:10 GST 2013,3,15,1000,3,"ByteBuffers, -server flag on server"
 "0,071897","0,066992","0,007407","0,060365",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:06:34 GST 2013,3,15,1000,3,"ByteBuffers, -server flag on server"
 "0,071937","0,067058","0,007399","0,060306",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:08:01 GST 2013,3,15,1000,3,"ByteBuffers, -server flag on server"
-"0,072251","0,066866","0,007470","0,060479",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:10:22 GST 2013,3,15,1000,3,"ByteArrays, -server flag on server"
+"0,072251","0,066866","0,00747","0,060479",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:10:22 GST 2013,3,15,1000,3,"ByteArrays, -server flag on server"
 "0,073688","0,070253","0,007057","0,057564",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:13:18 GST 2013,3,15,1000,3,"ByteArrays, -server flag on server"
 "0,071906","0,070347","0,007038","0,057487",oknio.test.MethodTrashBin.concatShortRes,Sun Mar 24 22:15:32 GST 2013,3,15,1000,3,"ByteArrays, -server flag on server"
-"-0,000000","0,000000",NaN,Infinity,oknio.test.MethodTrashBin.concatShortRes,Mon Mar 25 00:01:51 GMT+03:00 2013,3,15,100,3,"ByteArrays, -server flag on server, client on Win7x64, wifi"
-"-0,000000","0,000000",NaN,Infinity,oknio.test.MethodTrashBin.concatShortRes,Mon Mar 25 00:02:07 GMT+03:00 2013,3,15,100,3,"ByteArrays, -server flag on server, client on Win7x64, wifi"
+0,0,NaN,Infinity,oknio.test.MethodTrashBin.concatShortRes,Mon Mar 25 00:01:51 GMT+03:00 2013,3,15,100,3,"ByteArrays, -server flag on server, client on Win7x64, wifi"
+0,0,NaN,Infinity,oknio.test.MethodTrashBin.concatShortRes,Mon Mar 25 00:02:07 GMT+03:00 2013,3,15,100,3,"ByteArrays, -server flag on server, client on Win7x64, wifi"
 NaN,NaN,NaN,NaN,oknio.test.MethodTrashBin.concatShortRes,Mon Mar 25 00:02:40 GMT+03:00 2013,3,15,100,3,"ByteArrays, -server flag on server, client on Win7x64, wifi"
-"0,030265","0,029551","0,005585","0,136850",Sat Apr 20 23:53:44 GST 2013,"ByteArrays, -server flag on server"
-"0,030767","0,029545","0,005589","0,136878",Sat Apr 20 23:56:15 GST 2013,"ByteArrays, -server flag on server"
-"0,027264","0,026382","0,006259","0,153285",Sat Apr 20 23:58:09 GST 2013,"ByteArrays, -server flag on server"
-"0,028506","0,027693","0,005960","0,146029",Sat Apr 20 23:59:15 GST 2013,"ByteArrays, -server flag on server"
-"0,026221","0,025140","0,006566","0,160862",Sat Apr 20 23:59:48 GST 2013,"ByteArrays, -server flag on server"
-100,3,8000,100,1,15,"0,028279","0,027573","0,005988","0,146663",Sun Apr 21 00:00:33 GST 2013,"ByteArrays, -server flag on server"
 "0,027631","0,026675","0,006189","0,151604",Sun Apr 21 00:04:02 GST 2013,"ByteArrays, -server flag on server",runsCount = 100,sleepDelay = 3,bufferSize = 8000,maxPoolSize = 100,clientsCount = 1,threadsPerClient = 15
+"0,027826","0,027006","0,006114","0,149742",Sun Apr 21 00:06:01 GST 2013,"ByteArrays, -server flag on server",gen = oknio.test.TestStringArrGenerator@83f9de,meth = public static java.lang.String oknio.test.MethodTrashBin.concatShortRes(java.lang.String[]),runsCount = 100,sleepDelay = 3,bufferSize = 8000,maxPoolSize = 100,clientsCount = 1,threadsPerClient = 15
+"0,029321","0,028527","0,005787","0,141759",Sun Apr 21 15:14:51 GST 2013,"ByteArrays, -server flag on server"
+"0,027806","0,027052","0,006103","0,149487",Sun Apr 21 15:16:21 GST 2013,"ByteArrays, -server flag on server"
+"0,027799","0,026897","0,006137","0,150353",Sun Apr 21 15:19:55 GST 2013,"ByteArrays, -server flag on server",testedMethod = public static java.lang.String oknio.test.MethodTrashBin.concatShortRes(java.lang.String[]),runsCount = 100,sleepDelay = 3,bufferSize = 8000,maxPoolSize = 100,clientsCount = 1,threadsPerClient = 15,clientType = BYTE_BUF_CLIENT

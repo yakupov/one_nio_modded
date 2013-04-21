@@ -4,6 +4,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import oknio.test.config.Configuration;
 import one.nio.rpc.AbstractRpcClient;
 import one.nio.rpc.RemoteMethodCall;
 

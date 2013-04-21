@@ -6,27 +6,35 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import oknio.test.config.ClientType;
+import oknio.test.config.Configuration;
 import one.nio.net.ConnectionString;
 import one.nio.rpc.AbstractRpcClient;
-import one.nio.rpc.ByteArrayRpcClient;
-import one.nio.rpc.ByteBufferRpcClient;
 import one.nio.rpc.RemoteMethodCall;
 
 
-public class ClientTest {
-	public static final String host = "192.168.1.249";
-	public static final int port = 12346;
-	
+public class ClientTest {	
 	public static void main(String[] args) throws Exception {
-		final String fileName = "results.csv";
-		
+		String host = "192.168.1.249";
+		int port = 12346;
+		ConnectionString connString = new ConnectionString("http://" + host + ":" + String.valueOf(port));
 		TestDataGenerator gen = new TestStringArrGenerator();
 		Configuration conf = new Configuration(
 				gen, 
 				getMethod(MethodTrashBin.class, "concatShortRes", gen), 
-				100, 3, 8000, 100, 1, 15);
+				100, 
+				3, 
+				8000, 
+				100, 
+				1, 
+				15, 
+				connString, 
+				ClientType.BYTE_BUF_CLIENT
+		);
+		
 		String[] results = parallelRun(conf, "ByteArrays, -server flag on server");
-		sendResults(fileName, results);
+		final String fileName = "results.csv";
+		sendResults(fileName, results, conf);
 	}
 	
 	
@@ -53,13 +61,9 @@ public class ClientTest {
 	 * @param fileName
 	 * @param data
 	 */
-	private static void sendResults(String fileName, String[] data) {
-		String connString = "http://" + host + ":" + String.valueOf(port);
-		ConnectionString connection = null;
-		connection = new ConnectionString(connString);
-		
+	private static void sendResults(String fileName, String[] data, Configuration conf) {
 		try {
-			AbstractRpcClient<?> client = new ByteBufferRpcClient(connection, 8000, 100);
+			AbstractRpcClient<?> client = conf.createRpcClient();
 			client.invoke(new RemoteMethodCall(MethodTrashBin.class.getDeclaredMethod("saveToCsvFile", 
 					String.class, String[].class), new Object[] {fileName, data}));
 		} catch (Exception e) {
@@ -133,14 +137,8 @@ public class ClientTest {
 	private static List<TestThread> createRunners(Configuration conf) throws IOException {
 		List<TestThread> runners = new ArrayList<TestThread>();
 		
-		String connString = "http://" + host + ":" + String.valueOf(port);
-		ConnectionString connection = new ConnectionString(connString);
-
 		for (int i = 0; i < conf.getClientsCount(); ++i) {
-			AbstractRpcClient<?> client = new ByteBufferRpcClient(connection, conf.getBufferSize(), 
-					conf.getMaxPoolSize());
-			client = new ByteArrayRpcClient(connection);
-			
+			AbstractRpcClient<?> client = conf.createRpcClient();
 			for (int j = 0; j < conf.getThreadsPerClient(); ++j) {
 				runners.add(new TestThread(client, conf));
 			}
