@@ -5,18 +5,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import oknio.test.config.Configuration;
+import one.nio.pool.PoolException;
 import one.nio.rpc.AbstractRpcClient;
 import one.nio.rpc.RemoteMethodCall;
 
 public class TestThread implements Runnable {
 	public static class Pair {
-		public Pair(double latency, int size) {
+		public Pair(double latency, int argSize, int returnedValueSize) {
 			this.latency = latency;
-			this.size = size;
+			this.argSize = argSize;
+			this.returnedValueSize = returnedValueSize;
 		}
 		
-		public double latency;
-		public int size;
+		public double latency; //in secs
+		public int argSize; //in bytes
+		public int returnedValueSize;
 	}
 	
 	protected final AbstractRpcClient<?> 		client;
@@ -47,9 +50,16 @@ public class TestThread implements Runnable {
 		results.clear();
 		
 		for (int i = 0; i < numberOfTimes; ++i) {
-			Pair currRun = execTestOnce();
-			results.add(currRun);
-			Thread.sleep(sleepInterval);
+			try {
+				Pair currRun = execTestOnce();
+				results.add(currRun);
+				Thread.sleep(sleepInterval);
+			} catch (TestThreadException e) {
+				if (e.getCause() instanceof PoolException)
+					e.printStackTrace();
+				else
+					throw e;
+			}
 		}
 	}
 	
@@ -73,7 +83,7 @@ public class TestThread implements Runnable {
 		if (rsp != null)
 			log.add("--> response = " + rsp.toString());
 		
-		return new Pair(latency, Utils.sizeof(rsp));
+		return new Pair(latency, Utils.sizeof(testData), Utils.sizeof(rsp));
 	}
 	
 	public List<Pair> getResults() {
@@ -81,45 +91,99 @@ public class TestThread implements Runnable {
 	}
 	
 	/**
-	 * Get average latency, excluding the first run
+	 * @param thresholdRate: while LATi-1/LATi exceeds the given rate - skip such results
 	 * @return
 	 */
-	public double getAvgLatency() {
+	public double getAvgLatency(double thresholdRate) {
+		if (results.size() == 0)
+			return Double.NaN;
+		
+		if (results.size() == 1)
+			return results.get(0).latency;
+		
+		
+		double prevLatency = results.get(0).latency;
+		int i = 0;
+		for (i = 1; i < results.size(); i++) {
+			if (prevLatency / results.get(i).latency < thresholdRate)
+				break;
+		}
+		
+		if (i == results.size())
+			return results.get(results.size() - 1).latency;
+		
 		double avg = 0;
-		for (int i = 1; i < results.size(); ++i) {
+		int count = results.size() - i;
+		for (; i < results.size(); ++i) {
 			avg += results.get(i).latency;
 		}
-		avg /= (results.size() - 1);
+		avg /= count;
 		return avg;
 	}
 	
+	public double getAvgThroughputRet(double thresholdRate) {
+		if (results.size() == 0)
+			return Double.NaN;
+		
+		if (results.size() == 1)
+			return results.get(0).returnedValueSize / results.get(0).latency;
+		
+		double prevLatency = results.get(0).latency;
+		int i = 0;
+		for (i = 1; i < results.size(); i++) {
+			if (prevLatency / results.get(i).latency < thresholdRate)
+				break;
+		}
+		
+		if (i == results.size())
+			return results.get(results.size() - 1).returnedValueSize / results.get(results.size() - 1).latency;
+		
+		double avg = 0;
+		int count = results.size() - i;
+		for (; i < results.size(); ++i) {
+			avg += results.get(i).returnedValueSize / results.get(i).latency;
+		}
+		avg /= count;
+		return avg;
+	}
+	
+	public double getAvgThroughputArg(double thresholdRate) {
+		if (results.size() == 0)
+			return Double.NaN;
+		
+		if (results.size() == 1)
+			return results.get(0).argSize / results.get(0).latency;
+		
+		double prevLatency = results.get(0).latency;
+		int i = 0;
+		for (i = 1; i < results.size(); i++) {
+			if (prevLatency / results.get(i).latency < thresholdRate)
+				break;
+		}
+		
+		if (i == results.size())
+			return results.get(results.size() - 1).argSize / results.get(results.size() - 1).latency;
+		
+		double avg = 0;
+		int count = results.size() - i;
+		for (; i < results.size(); ++i) {
+			avg += results.get(i).argSize / results.get(i).latency;
+		}
+		avg /= count;
+		return avg;
+	}
+		
 	public String[] getLog() {
 		return log.toArray(new String[0]);
 	}
 	
-	/**
-	 * Get average size, excluding the first run
-	 * @return
-	 */
-	public double getAvgSize() {
-		double avg = 0;
-		for (int i = 1; i < results.size(); ++i) {
-			avg += results.get(i).size;
-		}
-		avg /= (results.size() - 1);
-		return avg;
-	}
-	
-	public double getAvgThroughput() {
-		return getAvgSize() / getAvgLatency();
-	}
-		
 	@Override
 	public void run() {
 		try {
 			execTest(runsCount, delay);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
+			return;
 		}
 	}
 }

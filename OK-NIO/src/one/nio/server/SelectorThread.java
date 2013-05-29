@@ -1,6 +1,5 @@
 package one.nio.server;
 
-import one.nio.net.Selector;
 import one.nio.net.Session;
 
 import org.apache.commons.logging.Log;
@@ -8,63 +7,62 @@ import org.apache.commons.logging.LogFactory;
 
 import java.io.IOException;
 import java.net.SocketException;
-import java.util.Iterator;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 final class SelectorThread extends Thread {
-    private static final Log log = LogFactory.getLog(SelectorThread.class);
-    private static final int BUFFER_SIZE = 64000;
+	private static final Log log = LogFactory.getLog(SelectorThread.class);
+	final Server server;
+	long operations;
+	long sessions;
+	protected static int REPLACE_ME_BY_SETTINGS_REQUEST_QUEUE_SIZE = 1000; //TODO: replace
+	protected final BlockingQueue<Session<?>> requestQueue;
 
-    final Server server;
-    final Selector selector;
+	SelectorThread(Server server, int num) throws IOException {
+		super("NIO Selector #" + num);
+		setUncaughtExceptionHandler(server);
+		this.server = server;
 
-    long operations;
-    long sessions;
-    int maxReady;
+		requestQueue = new ArrayBlockingQueue<Session<?>>(REPLACE_ME_BY_SETTINGS_REQUEST_QUEUE_SIZE);
+	}
 
-    SelectorThread(Server server, int num) throws IOException {
-        super("NIO Selector #" + num);
-        setUncaughtExceptionHandler(server);
-        this.server = server;
-        this.selector = Selector.create();
-    }
+	void shutdown() {
+		try {
+			join();
+		} catch (InterruptedException e) {
+			// Ignore
+		}
+	}
 
-    void shutdown() {
-        selector.close();
-        try {
-            join();
-        } catch (InterruptedException e) {
-            // Ignore
-        }
-    }
+	@Override
+	public void run() {
+		while (server.isRunning()) {
+			Session<?> session;
+			try {
+				session = requestQueue.take();
+			} catch (InterruptedException e1) {
+				e1.printStackTrace();
+				return;
+			}
+			try {
+				session.process(null);
+			} catch (SocketException e) {
+				if (server.isRunning() && log.isDebugEnabled()) {
+					log.debug("Connection closed: " + session.clientIp());
+				}
+				session.close();
+			} catch (Throwable e) {
+				if (server.isRunning()) {
+					log.error("Cannot process session from " + session.clientIp(), e);
+				}
+				session.close();
+			}
+		}
 
-    @Override
-    public void run() {
-        final byte[] buffer = new byte[BUFFER_SIZE];
-
-        while (server.isRunning()) {
-            int ready = 0;
-            for (Iterator<Session> selectedSessions = selector.select(); selectedSessions.hasNext(); ready++) {
-                Session session = selectedSessions.next();
-                try {
-                    session.process(buffer);
-                } catch (SocketException e) {
-                    if (server.isRunning() && log.isDebugEnabled()) {
-                        log.debug("Connection closed: " + session.clientIp());
-                    }
-                    session.close();
-                } catch (Throwable e) {
-                    if (server.isRunning()) {
-                        log.error("Cannot process session from " + session.clientIp(), e);
-                    }
-                    session.close();
-                }
-            }
-
-            operations++;
-            sessions += ready;
-            if (ready > maxReady) {
-                maxReady = ready;
-            }
-        }
-    }
+		operations++;
+	}
+	
+	public void register(Session<?> session) {
+		requestQueue.add(session);
+	}
 }

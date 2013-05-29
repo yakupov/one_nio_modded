@@ -3,6 +3,7 @@ package one.nio.rpc;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
+import java.nio.ByteBuffer;
 
 import one.nio.net.ConnectionString;
 import one.nio.net.Socket;
@@ -36,17 +37,18 @@ public class ByteArrayRpcClient extends AbstractRpcClient<byte []> {
 	protected void sendRequest(Socket socket, byte[] buffer) throws IOException {
 		socket.writeFully(buffer, 0, buffer.length);
 	}
-
+	
 	@Override
-	protected byte[] readResponse(Socket socket, byte[] poolBuffer) throws IOException {
-		int responseSize = readSize(socket);
+	protected Pair readResponse(Socket socket, byte[] poolBuffer) throws IOException {
+		int requestId = readInt(socket);
+		int responseSize = readInt(socket);
+		
 		byte[] buffer = poolBuffer;
 		if (buffer == null || buffer.length < responseSize) {
 			buffer = new byte[responseSize];
-
 		}
-
+		
 		socket.readFully(buffer, 0, responseSize);
-		return buffer;
+		return new Pair(buffer, requestId);
 	}
 }

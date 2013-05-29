@@ -1,15 +1,15 @@
 package one.nio.server;
 
-import one.nio.net.Selector;
-import one.nio.net.Session;
+import java.io.IOException;
+import java.net.InetAddress;
+import java.nio.channels.SelectionKey;
+import java.util.Random;
+
 import one.nio.net.Socket;
+import one.nio.server.Server.ClientConn;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.Random;
 
 final class AcceptorThread extends Thread {
     private static final Log log = LogFactory.getLog(AcceptorThread.class);
@@ -20,7 +20,6 @@ final class AcceptorThread extends Thread {
     final Socket serverSocket;
     final Random random;
 
-    long acceptedSessions;
 
     AcceptorThread(Server server, InetAddress address, int port, int backlog, int buffers) throws IOException {
         super("NIO Acceptor");
@@ -54,9 +53,8 @@ final class AcceptorThread extends Thread {
             try {
                 socket = serverSocket.accept();
                 socket.setBlocking(false);
-                Session session = server.createSession(socket);
-                getSmallestSelector().register(session);
-                acceptedSessions++;
+                SelectionKey sk = server.selector.register(socket, SelectionKey.OP_READ);
+                server.aliveClients.put(socket.getRemoteAddress(), new ClientConn(socket, server, null));
             } catch (Exception e) {
                 if (server.isRunning()) {
                     log.error("Cannot accept incoming connection", e);
@@ -66,12 +64,5 @@ final class AcceptorThread extends Thread {
                 }
             }
         }
-    }
-
-    private Selector getSmallestSelector() {
-        SelectorThread[] selectors = server.selectors;
-        Selector a = selectors[random.nextInt(selectors.length)].selector;
-        Selector b = selectors[random.nextInt(selectors.length)].selector;
-        return a.size() < b.size() ? a : b;
     }
 }

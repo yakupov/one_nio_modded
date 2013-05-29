@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<configuration>
+    <tdgClassName>oknio.test.TestStringArrGenerator</tdgClassName>
+    <methEnclosingClassName>oknio.test.MethodTrashBin</methEnclosingClassName>
+    <methName>concatShortRes</methName>
+    <runsCount>100</runsCount>
+    <sleepDelay>0</sleepDelay>
+    <bufferSize>8000</bufferSize>
+    <maxPoolSize>1000</maxPoolSize>
+    <clientsCount>1</clientsCount>
+    <threadsPerClient>100</threadsPerClient>
+    <clientType>BYTE_ARR_CLIENT</clientType>
+    <host>192.168.1.131</host>
+    <port>12346</port>
+    <comment>ByteArrs, JSock, OLD</comment>
+</configuration>

@@ -8,15 +8,20 @@ import one.nio.net.Socket;
 import one.nio.serial.BBDeserializeStream;
 import one.nio.serial.BBSerializeStream;
 
-public class ByteBufferRpcSession extends RpcSession<RemoteMethodCall, Object, ByteBuffer>{
-	public ByteBufferRpcSession(Socket socket, RpcServer<RemoteMethodCall, Object> server, BufferPool<ByteBuffer> bufferPool) {
-        super(socket, server, bufferPool);
+public class ByteBufferRpcSession extends NewRpcSession<RemoteMethodCall, Object, ByteBuffer>{
+	public ByteBufferRpcSession(Socket socket, RpcServer<RemoteMethodCall, Object> server, 
+			BufferPool<ByteBuffer> bufferPool, int sessionId) throws IOException {
+        super(socket, server, bufferPool, sessionId);
 	}
 
 	@Override
 	protected int readFromSocket(ByteBuffer buffer, int offset, int count)
 			throws IOException {
-		return socket.read(buffer);
+		buffer.clear();
+		buffer.position(offset);
+		buffer.limit(offset + count);
+		socket.readFully(buffer);
+		return count;
 	}
 
 	@Override
@@ -30,9 +35,10 @@ public class ByteBufferRpcSession extends RpcSession<RemoteMethodCall, Object, B
 	}
 
 	@Override
-	protected void serialize(ByteBuffer buffer, int size, Object response) throws IOException {
+	protected void serialize(ByteBuffer buffer, int size, int id, Object response) throws IOException {
 		buffer.clear();
 		BBSerializeStream ss = new BBSerializeStream(buffer);
+		ss.writeInt(id);
         ss.writeInt(size);
         ss.writeObject(response);
         ss.close();

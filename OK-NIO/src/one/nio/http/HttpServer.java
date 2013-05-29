@@ -14,7 +14,7 @@ public abstract class HttpServer extends Server {
     }
 
     @Override
-    public Session createSession(Socket socket) {
+    public Session createSession(Socket socket, int unusedId) {
         return new HttpSession(socket, this);
     }
 

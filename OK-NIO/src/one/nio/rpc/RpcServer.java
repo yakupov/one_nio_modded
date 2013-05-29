@@ -17,12 +17,7 @@ public abstract class RpcServer<Q, R> extends Server implements RpcService<Q, R>
         super(conn);
         this.delegate = delegate;
     }
-/*
-    @Override
-    public Session createSession(Socket socket) {
-        return new RpcSession(socket, this);
-    }
-*/
+
     @Override
     public R invoke(Q request) throws Exception {
         return delegate.invoke(request);

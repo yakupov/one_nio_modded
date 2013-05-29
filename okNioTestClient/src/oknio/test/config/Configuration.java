@@ -7,55 +7,91 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import oknio.test.TestDataGenerator;
 import one.nio.net.ConnectionString;
 import one.nio.rpc.AbstractRpcClient;
 
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.NONE)
 public class Configuration {
 	@Retention(RetentionPolicy.RUNTIME)
 	public static @interface AddToLog {
 	}
 	
-	//test
+	//tested method
 	protected TestDataGenerator testDataGenerator;
+	@XmlElement
+	protected String tdgClassName;
 	@AddToLog
 	protected Method testedMethod;
+	@XmlElement
+	protected String methEnclosingClassName;
+	@XmlElement
+	protected String methName;
 	
 	//thread
 	@AddToLog
+	@XmlElement
 	protected int runsCount;
 	@AddToLog
+	@XmlElement
 	protected int sleepDelay;
 	
 	//client
 	@AddToLog
+	@XmlElement
 	protected int bufferSize;
 	@AddToLog
+	@XmlElement
 	protected int maxPoolSize;
 	@AddToLog
+	@XmlElement
 	protected int clientsCount;
 	@AddToLog
+	@XmlElement
 	protected int threadsPerClient;
-	protected ConnectionString connString;
 	@AddToLog
+	@XmlElement
 	protected ClientType clientType;
 	
-	public Configuration(TestDataGenerator gen, Method meth, int runsCount,
-			int sleepDelay, int bufferSize, int maxPoolSize, int clientsCount,
-			int threadsPerClient, ConnectionString connString, ClientType clientType) {
-		super();
-		this.testDataGenerator = gen;
-		this.testedMethod = meth;
-		this.runsCount = runsCount;
-		this.sleepDelay = sleepDelay;
-		this.bufferSize = bufferSize;
-		this.maxPoolSize = maxPoolSize;
-		this.clientsCount = clientsCount;
-		this.threadsPerClient = threadsPerClient;
-		this.connString = connString;
-		this.clientType = clientType;
-	}
+	//server
+	protected ConnectionString connString;
+	@XmlElement
+	protected String host;
+	@XmlElement
+	protected int port;	
+	
+	//misc
+	@AddToLog
+	@XmlElement
+	protected String comment;
 
+	
+	/**
+	 * Run this method ONLY AFTER this class was deserialized by JAXB
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws ClassNotFoundException
+	 * @throws NoSuchMethodException
+	 * @throws SecurityException
+	 */
+	public void init() throws InstantiationException, IllegalAccessException, 
+			ClassNotFoundException, NoSuchMethodException, SecurityException {
+		this.testDataGenerator = (TestDataGenerator) Class.forName(tdgClassName).newInstance();
+		Object[] args = testDataGenerator.generateTestData();
+		Class<?> methEnclosingClass = Class.forName(methEnclosingClassName);
+		if (args != null)
+			this.testedMethod = methEnclosingClass.getDeclaredMethod(methName, args.getClass());
+		else
+			this.testedMethod = methEnclosingClass.getDeclaredMethod(methName);
+		
+		this.connString = new ConnectionString("http://" + host + ":" + String.valueOf(port));
+	}
+	
 	public TestDataGenerator getTestDataGenerator() {
 		return testDataGenerator;
 	}
@@ -116,6 +152,10 @@ public class Configuration {
 
 	public ConnectionString getConnString() {
 		return this.connString;
+	}
+	
+	public String getComment() {
+		return this.comment;
 	}
 	
 	public AbstractRpcClient<?> createRpcClient() throws IOException {

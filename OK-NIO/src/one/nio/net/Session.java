@@ -51,27 +51,7 @@ public abstract class Session<T> implements Closeable {
         stats[0] = length;
         stats[1] = bytes;
     }
-/*
-    public synchronized void write(byte[] data, int offset, int count, boolean close) throws IOException {
-        if (writeQueue != null) {
-            WriteQueue tail = writeQueue;
-            while (tail.next != null) {
-                tail = tail.next;
-            }
-            tail.next = new WriteQueue(data, offset, count, close);
-        } else if (socket.isOpen()) {
-            int bytesWritten = socket.write(data, offset, count);
-            if (bytesWritten < count) {
-                offset += bytesWritten;
-                count -= bytesWritten;
-                writeQueue = new WriteQueue(data, offset, count, close);
-                selector.listen(this, WRITEABLE);
-            } else if (close) {
-                close();
-            }
-        }
-    }
-*/    
+  
     public synchronized void write(T data, int offset, int count, boolean close) throws IOException {
     	if (writeQueue != null) {
             WriteQueue<T> tail = writeQueue;
@@ -111,42 +91,19 @@ public abstract class Session<T> implements Closeable {
     }
 
 	protected abstract int writeToSocket(T data, int offset, int count) throws IOException;
-	
-/*
-    protected synchronized void processWrite() throws Exception {
-        for (WriteQueue head = writeQueue; head != null; head = head.next) {
-            int bytesWritten = socket.write(head.data, head.offset, head.count);
-            if (bytesWritten < head.count) {
-                head.offset += bytesWritten;
-                head.count -= bytesWritten;
-                writeQueue = head;
-                return;
-            } else if (head.close) {
-                close();
-                return;
-            }
-        }
-        writeQueue = null;
-        selector.listen(this, READABLE);
-    }
-*/
-    /*
-    protected void processRead(byte[] buffer) throws Exception {
-       socket.read(buffer, 0, buffer.length);
-    }
-    */
-    protected abstract void processRead(T buffer) throws Exception;/* {
-    	socket.read(buffer);
-    }*/
+
+    protected abstract void processRead(T buffer) throws Exception;
     
-    public void process(T buffer) throws Exception {
+    public void process (T buffer) throws Exception {
+    	//System.out.println ("process");
+    	
         lastAccessTime = 0;
         if ((events & WRITEABLE) != 0) {
-        	//System.out.println ("processWrite");
+        	//System.out.println ("exec processWrite");
             processWrite();
         }
         if ((events & (READABLE | CLOSING)) != 0) {
-        	//System.out.println ("processRead");
+        	//System.out.println ("exec processRead");
             processRead(buffer);
         }
         lastAccessTime = System.currentTimeMillis();

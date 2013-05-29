@@ -25,7 +25,7 @@ public final class ByteBufferDefaultRpcServer extends DefaultRpcServer {
     }
 
 	@Override
-	public Session<ByteBuffer> createSession(Socket socket) {
-		return new ByteBufferRpcSession(socket, this, bufferPool);
+	public Session<ByteBuffer> createSession(Socket socket, int sessionId) throws IOException {
+		return new ByteBufferRpcSession(socket, this, bufferPool, sessionId);
 	}
 }

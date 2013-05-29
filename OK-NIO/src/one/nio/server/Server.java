@@ -1,18 +1,35 @@
 package one.nio.server;
 
+import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.nio.channels.SelectionKey;
+import java.util.Arrays;
+
+import one.nio.mgt.Management;
 import one.nio.net.ConnectionString;
+import one.nio.net.JavaSelector2;
 import one.nio.net.Session;
 import one.nio.net.Socket;
-import one.nio.mgt.Management;
+import one.nio.util.Multimap;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.io.IOException;
-import java.net.InetAddress;
-import java.util.Arrays;
-
 public abstract class Server implements ServerMXBean, Thread.UncaughtExceptionHandler {
+	public static final class ClientConn {
+		public ClientConn(Socket socket, Server server, SelectionKey sk) {
+			this.socket = socket;
+			this.receiver = new ServerReceiveThread(socket, server, sk);
+			this.receiverThread = new Thread(receiver);
+			this.receiverThread.start();
+		}
+		
+		final Socket socket;
+		final ServerReceiveThread receiver;
+		final Thread receiverThread;
+	}
+	
     private static final Log log = LogFactory.getLog(Server.class);
 
     private final SelectorStats selectorStats;
@@ -25,7 +42,10 @@ public abstract class Server implements ServerMXBean, Thread.UncaughtExceptionHa
     protected WorkerPool workers;
     protected CleanupThread cleanup;
     protected boolean useWorkers;
-
+    
+    final Multimap<InetSocketAddress, ClientConn> aliveClients;
+    final JavaSelector2 selector;
+    
     public Server(ConnectionString conn) throws IOException {
         InetAddress address = InetAddress.getByName(conn.getHost());
         int port = conn.getPort();
@@ -56,6 +76,9 @@ public abstract class Server implements ServerMXBean, Thread.UncaughtExceptionHa
         if (conn.getBooleanParam("jmx", true)) {
             Management.registerMXBean(this, "type=Server,port=" + port);
         }
+        
+        aliveClients = new Multimap<InetSocketAddress, ClientConn>();
+        selector = new JavaSelector2();
     }
 
     public boolean reconfigure(ConnectionString conn) throws IOException {
@@ -114,9 +137,9 @@ public abstract class Server implements ServerMXBean, Thread.UncaughtExceptionHa
         }
     }
 
-    public abstract Session<?> createSession(Socket socket); /*{
-    return new Session(socket);
-}*/
+    //TODO: кому собираемся слать ответ??? По адресу или в сокет?
+    //пока - в сокет: на одном адресе мб несколько клиентов
+    public abstract Session<?> createSession(Socket socket, int sessionId) throws IOException;
 
     @Override
     public final boolean isRunning() {
@@ -127,7 +150,7 @@ public abstract class Server implements ServerMXBean, Thread.UncaughtExceptionHa
     public int getConnections() {
         int result = 0;
         for (SelectorThread selector : selectors) {
-            result += selector.selector.size();
+            result += selector.requestQueue.size();
         }
         return result;
     }
@@ -146,12 +169,19 @@ public abstract class Server implements ServerMXBean, Thread.UncaughtExceptionHa
     public int getWorkersActive() {
         return workers.getActiveCount();
     }
-
+/*
     @Override
     public long getAcceptedSessions() {
         return acceptor.acceptedSessions;
     }
-
+*/
+    
+	@Override
+	public long getAcceptedSessions() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
     @Override
     public int getSelectorCount() {
         return selectors.length;
@@ -199,11 +229,11 @@ public abstract class Server implements ServerMXBean, Thread.UncaughtExceptionHa
 
     @Override
     public void reset() {
-        acceptor.acceptedSessions = 0;
+        //acceptor.acceptedSessions = 0;
         for (SelectorThread selector : selectors) {
             selector.operations = 0;
             selector.sessions = 0;
-            selector.maxReady = 0;
+            //selector.maxReady = 0;
         }
     }
 
@@ -254,7 +284,7 @@ public abstract class Server implements ServerMXBean, Thread.UncaughtExceptionHa
             for (SelectorThread selector : selectors) {
                 operations += selector.operations;
                 sessions += selector.sessions;
-                maxSelected = Math.max(maxSelected, selector.maxReady);
+                //maxSelected = Math.max(maxSelected, selector.maxReady);
             }
 
             this.operations = operations;
@@ -306,7 +336,7 @@ public abstract class Server implements ServerMXBean, Thread.UncaughtExceptionHa
             long[] stats = new long[2];
 
             for (SelectorThread selector : selectors) {
-                for (Session<?> session : selector.selector) {
+                for (Session<?> session : selector.requestQueue) {
                     session.getQueueStats(stats);
                     sessions++;
                     totalLength += stats[0];

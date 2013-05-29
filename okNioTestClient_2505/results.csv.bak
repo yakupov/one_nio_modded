@@ -1,0 +1,7 @@
+worstAvgLatency;avgAvgLatency;avgAvgThroughputOut;avgAvgThroughputIn;method name;date;threads count;#runs in thread;sleep;
+0,007695;0,007054;2,291128;0,573292;oknio.test.MethodTrashBinconcatRand;Sun Feb 10 22:21:05 GST 2013;10;100;3;
+0,007183;0,006718;2,395003;0,601956;oknio.test.MethodTrashBin.concatRand;Sun Feb 10 22:21:35 GST 2013;10;100;3;
+0,007417;0,006992;2,298813;0,578338;oknio.test.MethodTrashBin.concatRand;Sun Feb 10 22:23:27 GST 2013;10;100;3;
+0,006739;0,005564;2,935264;0,726772;oknio.test.MethodTrashBin.concatRand;Sun Feb 10 22:24:45 GST 2013;10;100;3;
+0,006660;0,006259;2,570785;0,646129;oknio.test.MethodTrashBin.concatRand;Sun Feb 10 22:30:23 GST 2013;10;100;3;
+0,007644;0,006266;2,587369;0,645363;oknio.test.MethodTrashBin.concatRand;Sun Feb 10 22:31:28 GST 2013;10;100;3;

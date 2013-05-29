@@ -47,7 +47,7 @@ final class CleanupThread extends Thread {
             int writeExpired = 0;
 
             for (SelectorThread selector : selectors) {
-                for (Session session : selector.selector) {
+                for (Session<?> session : selector.requestQueue) {
                     long lastAccessTime = session.lastAccessTime();
                     if (lastAccessTime > 0 && lastAccessTime < readExpiration) {
                         if (!session.writePending()) {

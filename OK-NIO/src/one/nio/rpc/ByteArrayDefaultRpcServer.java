@@ -23,7 +23,7 @@ public final class ByteArrayDefaultRpcServer extends DefaultRpcServer {
     }
     
 	@Override
-	public Session<byte[]> createSession(Socket socket) {
-		return new ByteArrayRpcSession(socket, this, bufferPool);
+	public Session<byte[]> createSession(Socket socket, int sessionId) throws IOException {
+		return new ByteArrayRpcSession(socket, this, bufferPool, sessionId);
 	}
 }

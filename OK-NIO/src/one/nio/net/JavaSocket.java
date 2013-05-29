@@ -164,10 +164,20 @@ final class JavaSocket extends Socket {
         if (result < 0) {
             throw new SocketException("Socket closed");
         }
-        if (buffer.position() != 0)
+        //if (buffer.position() != 0)
 			buffer.flip();
         return result;
 	}
+	
+	@Override
+    public final void readFully(ByteBuffer buffer) throws IOException {
+        while (buffer.hasRemaining()) {
+            if (ch.read(buffer) < 0) {
+                throw new SocketException("Socket closed");
+            }
+        }
+        buffer.flip();
+    }
 	
 	@Override
     public final int write(ByteBuffer data) throws IOException {

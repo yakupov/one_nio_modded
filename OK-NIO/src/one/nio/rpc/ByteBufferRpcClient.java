@@ -46,9 +46,10 @@ public class ByteBufferRpcClient extends AbstractRpcClient<ByteBuffer> {
 	}
 
 	@Override
-	protected ByteBuffer readResponse(Socket socket, ByteBuffer poolBuffer)
+	protected Pair readResponse(Socket socket, ByteBuffer poolBuffer)
 			throws IOException {
-		int responseSize = readSize(socket);
+		int requestId = readInt(socket);
+		int responseSize = readInt(socket);
 		
 		ByteBuffer buffer = poolBuffer;
 		if (buffer != null && buffer.capacity() >= responseSize) {
@@ -56,13 +57,20 @@ public class ByteBufferRpcClient extends AbstractRpcClient<ByteBuffer> {
 		} else {
 			buffer = ByteBuffer.allocate(responseSize);
 		}
-		
-		socket.read(buffer);
-		return buffer;
+		buffer.limit(responseSize);
+		socket.readFully(buffer);
+		return new Pair(buffer, requestId);
 	}
 
 	@Override
 	protected ByteBuffer getPooledBuffer() {
+		while (directByteBufferPool == null)
+			try {
+				Thread.sleep(10);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+				return null;
+			}
 		return directByteBufferPool.getBuffer(bufferSize);
 	}
 	

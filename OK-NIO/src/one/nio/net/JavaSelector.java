@@ -36,6 +36,8 @@ final class JavaSelector extends Selector {
         session.selector = this;
         pendingSessions.add(session);
         impl.wakeup();
+        
+        System.out.println(session + " registered by JavaSelector");
     }
 
     @Override
@@ -69,9 +71,41 @@ final class JavaSelector extends Selector {
         return result;
     }
 
-    private void registerPendingSessions() throws ClosedChannelException {
+    public void registerPendingSessions() throws ClosedChannelException {
         for (Session session; (session = pendingSessions.poll()) != null; ) {
-            ((JavaSocket) session.socket).ch.register(impl, Session.READABLE, session);
+            SelectionKey sk = ((JavaSocket) session.socket).ch.register(impl, Session.READABLE, session);
+            System.out.println("JS register: " + session);
+            System.out.println("SK " + sk);
+            System.out.println(impl.selectedKeys().size());
+            
+            System.out.println(((JavaSocket) session.socket).ch.isBlocking());
+            System.out.println(((JavaSocket) session.socket).ch.isConnected());
+            System.out.println(((JavaSocket) session.socket).ch.isConnectionPending());
+            System.out.println(((JavaSocket) session.socket).ch.isOpen());
+            System.out.println(((JavaSocket) session.socket).ch.isRegistered());
+            try {
+				System.out.println(((JavaSocket) session.socket).ch.getRemoteAddress());
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+            
+            
+            int i = -1;
+			try {
+				i = impl.select();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            System.out.println(i + " selected");
+            
+            
+            System.out.println(sk.isAcceptable());
+            System.out.println(sk.isConnectable());
+            System.out.println(sk.isReadable());
+            System.out.println(sk.isValid());
+            System.out.println(sk.isWritable());
         }
     }
 

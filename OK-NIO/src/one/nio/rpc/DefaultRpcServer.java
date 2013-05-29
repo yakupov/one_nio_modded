@@ -76,6 +76,7 @@ public abstract class DefaultRpcServer extends RpcServer<RemoteMethodCall, Objec
         	
             throw new NoSuchMethodException("Method id not found: " + Long.toHexString(request.getMethodId()));
         }
+
         Object o = m.invoke(instance, request.getArgs());
         //System.err.println (o.toString());
         return o;

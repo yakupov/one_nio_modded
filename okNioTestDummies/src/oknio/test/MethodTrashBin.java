@@ -53,6 +53,9 @@ public class MethodTrashBin {
 			res += s + " ";
 		}
 		
+		//System.err.println(res);
+		//System.err.println(String.valueOf(res.length()));
+		
 		return String.valueOf(res.length());
 	}
 	
@@ -102,5 +105,11 @@ public class MethodTrashBin {
 			if (j == 3)
 				return;
 		}
+	}
+	
+	@RemoteMethod
+	public static String hello() {
+		//System.err.println("hello");
+		return "hello";
 	}
 }
